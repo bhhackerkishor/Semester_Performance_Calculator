@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Semester Marks Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4A55A2;
+      --secondary-color: #7895CB;
+      --accent-color: #A0BFE0;
+      --success-color: #4CAF50;
+      --warning-color: #ff9800;
+      --error-color: #f44336;
+      --text-color: #2B2B2B;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      color: var(--text-color);
+    }
+
+    .navbar {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1.2rem;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      background: #fff;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(74,85,162,0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      background: var(--secondary-color);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .result {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .result.success {
+      border-left: 4px solid var(--success-color);
+    }
+
+    .result.warning {
+      border-left: 4px solid var(--warning-color);
+    }
+
+    .result.error {
+      border-left: 4px solid var(--error-color);
+    }
+
+    .info {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .info h4 {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    .info ul {
+      padding-left: 1.2rem;
+      margin: 0;
+    }
+
+    .info li {
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .footer {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      .input-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">Semester Performance Calculator</div>
+
+  <div class="container">
+    <div class="control-group">
+      <label for="mode">Calculation Mode</label>
+      <select id="mode" onchange="toggleMode()">
+        <option value="total">Calculate Total Marks</option>
+        <option value="required">Determine Required External Marks</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <div>
+        <label for="test1">Internal Test 1</label>
+        <input type="number" id="test1" placeholder="Enter marks (0-100)" min="0" max="100">
+      </div>
+      <div>
+        <label for="test2">Internal Test 2</label>
+        <input type="number" id="test2" placeholder="Enter marks (0-100)" min="0" max="100">
+      </div>
+    </div>
+
+    <div id="external-input">
+      <label for="external">External Exam Marks</label>
+      <input type="number" id="external" placeholder="Enter marks (0-100)" min="0" max="100">
+    </div>
+
+    <button onclick="calculate()">Calculate Results</button>
+
+    <div class="result" id="result"></div>
+
+    <div class="info">
+      <h4>Evaluation Guidelines</h4>
+      <ul>
+        <li>📘 Internal Assessment: Average of two tests converted to 40% weightage</li>
+        <li>📝 External Examination: Direct score converted to 60% weightage</li>
+        <li>🎯 Passing Criteria: Minimum 50% aggregate <em>and</em> 45% in external</li>
+        <li>⚠️ Conditional Pass: Meeting only one criterion results in failure</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">Academic Analytics Tool | Developed by Academic Office</div>
+
+  <script>
+    function toggleMode() {
+      const mode = document.getElementById("mode").value;
+      const externalInput = document.getElementById("external-input");
+      externalInput.style.display = mode === "total" ? "block" : "none";
+      document.getElementById("result").innerHTML = '';
+    }
+
+    function calculate() {
+      const mode = document.getElementById("mode").value;
+      const test1 = parseFloat(document.getElementById("test1").value) || 0;
+      const test2 = parseFloat(document.getElementById("test2").value) || 0;
+      const internalAvg = (test1 + test2) / 2;
+      const internal40 = (internalAvg / 100) * 40;
+      const resultDiv = document.getElementById("result");
+
+      if (mode === "total") {
+        const external = parseFloat(document.getElementById("external").value) || 0;
+        const external60 = (external / 100) * 60;
+        const total = internal40 + external60;
+
+        let resultClass = 'success';
+        let resultText = `
+          <strong>Internal Contribution:</strong> ${internal40.toFixed(2)}/40\n
+          <strong>External Contribution:</strong> ${external60.toFixed(2)}/60\n
+          <strong>Total Score:</strong> ${total.toFixed(2)}/100
+        `;
+
+        if (external < 45 || total < 50) {
+          resultClass = 'error';
+          resultText += `\n\n🚨 Alert: `;
+          if (external < 45) resultText += `External mark below 45! `;
+          if (total < 50) resultText += `Total below 50! `;
+          resultText += `Academic probation required.`;
+        } else {
+          resultText += `\n\n🎉 Congratulations! All requirements satisfied.`;
+        }
+
+        resultDiv.className = `result ${resultClass}`;
+        resultDiv.innerHTML = resultText.replace(/\n/g, '<br>');
+      } else {
+        const requiredTotal = 50;
+        const requiredExternal60 = requiredTotal - internal40;
+        let resultText = `<strong>Current Internal:</strong> ${internal40.toFixed(2)}/40`;
+
+        if (requiredExternal60 <= 0) {
+          resultDiv.className = 'result success';
+          resultText += `\n\n✅ Already secured passing criteria!`;
+        } else {
+          const requiredExternalMarks = (requiredExternal60 / 60) * 100;
+          const safeRequired = Math.max(requiredExternalMarks, 45);
+          resultDiv.className = 'result warning';
+          resultText += `
+            \n\n📈 Required External: ${safeRequired.toFixed(2)}/100
+            \n💡 Strategy: Aim for ${Math.ceil(safeRequired)} to ensure success
+            \n⚠️ Reminder: Minimum 45 in external compulsory
+          `;
+        }
+        resultDiv.innerHTML = resultText.replace(/\n/g, '<br>');
+      }
+    }
+
+    // Input validation
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        let value = parseFloat(e.target.value);
+        if (value > 100) e.target.value = 100;
+        if (value < 0) e.target.value = 0;
+      });
+    });
+
+    toggleMode();
+  </script>
+
+</body>
+</html>
